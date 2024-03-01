@@ -23,8 +23,8 @@ function App() {
   }, [socket]);
 
   return (
-    <div className="App">
-      <input type="text" value={message} onChange={(e) => {setMessage(e.target.value)}} placeholder='message'/>
+    <div className="flex flex-row justify-center align-center items-center m-auto p-10 m-5">
+      <input className='w-[500px]' type="text" value={message} onChange={(e) => {setMessage(e.target.value)}} placeholder='message' />
       <input type='button' value='Send Message' onClick={sendMessage} />
     </div>
   );
