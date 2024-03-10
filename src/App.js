@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import io from 'socket.io-client'
 import {useState, useEffect} from 'react'
+import Setup from './components/Setup';
 
 const socket = io.connect("https://prits-server.onrender.com/");
 
@@ -23,9 +24,8 @@ function App() {
   }, [socket]);
 
   return (
-    <div className="flex flex-row justify-center align-center items-center m-auto p-10 m-5">
-      <input className='w-[500px]' type="text" value={message} onChange={(e) => {setMessage(e.target.value)}} placeholder='message' />
-      <input type='button' value='Send Message' onClick={sendMessage} />
+    <div className='h-full w-full flex flex-row content-center justify-center align-middle m-auto'>
+      <Setup />
     </div>
   );
 }
