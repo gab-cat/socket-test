@@ -6,18 +6,23 @@ import MessageBox from './components/messageBox'
 import { useContextProvider } from './context';
 
 const socket = io.connect("https://prits-server.onrender.com/");
-//const socket = io.connect("localhost:5000");
+// const socket = io.connect("localhost:5000");
 
 function App() {
 
   const {message, setMessage, doneSetup, room, username, setMessageThread, setDoneSetup} = useContextProvider();
   const [loading, setLoading] = useState(false)
   const [showJoinError, setJoinError] = useState(false);
+  const [typingUsers, setTypingUsers] = useState([])
 
   const now = new Date();
   const localTime = now.toLocaleTimeString();
 
   const sendMessage = () => {
+    if (message === '') {
+      return;
+    }
+
     const data = {
       username: username, 
       message: message, 
@@ -27,8 +32,21 @@ function App() {
     socket.emit('send_message', data);
     setMessageThread(prevMessages => [...prevMessages, data]);
     setMessage('')
+    socket.emit('not_typing', { username: username });
     console.log(message);
 }
+
+const handleMessage = (e) => {
+  const newMessage = e.target.value; 
+  setMessage(newMessage); 
+
+  if (newMessage.trim() === '') {
+    socket.emit('not_typing', { username: username });
+  } else {
+    socket.emit('typing', { username: username });
+  }
+};
+
 
   const joinRoom = () => {
     socket.emit('join_room', { room: room, username: username });
@@ -49,11 +67,19 @@ function App() {
       setLoading(false)
     })
 
+    socket.on('typingUsers', (data) => {
+      
+      const filteredTypingUsers = data.filter(data => data !== username);
+      console.log(filteredTypingUsers)
+      setTypingUsers(filteredTypingUsers);
+    })
+
   }, [socket]);
 
   return (
     <div className='h-full w-full flex flex-row content-center justify-center align-middle m-auto'>
-      {!doneSetup ? <Setup joinRoom={joinRoom} loading={loading} setLoading={setLoading} showJoinError={showJoinError} /> : <MessageBox sendMessage={sendMessage}/>}
+      {!doneSetup ? <Setup joinRoom={joinRoom} loading={loading} setLoading={setLoading} showJoinError={showJoinError} /> : 
+      <MessageBox sendMessage={sendMessage} handleMessage={handleMessage} typingUsers={typingUsers}/>}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { CgSpinner } from "react-icons/cg";
 
 const Setup = ({joinRoom, loading, setLoading, showJoinError}) => {
 
-    const {room, setRoom, username, setUsername, setDoneSetup} = useContextProvider();
+    const {room, setRoom, username, setUsername } = useContextProvider();
     const [showError, setShowError] = useState(false);
     const loginError = 'Please input a username and room to join.';
     const joinError = `Join room error: Username ${username} is already taken, please try another.`
@@ -50,7 +50,7 @@ const Setup = ({joinRoom, loading, setLoading, showJoinError}) => {
             </div>
             <button onClick={handleClick} 
                     disabled={loading} 
-                    className={`mt-5 p-1 font-bold text-white rounded-xl max-w-25 shadow-md 
+                    className={`mt-5 p-1 font-bold text-white rounded-lg max-w-25 shadow-md 
                     ${loading ? 'bg-cyan-900' : 'bg-cyan-700'} 
                     ${loading ? '' : 'hover:opacity-75 hover:transition-all'}`}>
                 {loading ? <CgSpinner className="text-2xl text-center animate-spin m-auto"/> : 'Join a Room' }
