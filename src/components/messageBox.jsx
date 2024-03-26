@@ -43,7 +43,7 @@ const MessageBox = ( {sendMessage, handleMessage, typingUsers}) => {
         const renderUsername = previousUsername !== data.username;
         previousUsername = data.username;
         return (
-          <div key={index} className={username === data.username ? 'p-2 flex flex-col self-end content-end items-end rounded-xl w-3/4 my-[-0.75vh]' : 'p-2 my-[-0.75vh] rounded-xl w-3/4'}>
+          <div key={index} className={username === data.username ? 'p-2 flex flex-col self-end content-end items-end rounded-xl w-3/4 my-[-0.5vh]' : 'p-2 my-[-0.5vh] rounded-xl w-3/4'}>
             {renderUsername && (
               <div className='text-xs mt-3 p-0.5 mx-1 text-gray-700'>
                 {username === data.username ? 'You' : data.username}
