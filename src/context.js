@@ -7,9 +7,11 @@ export const ContextProvider = ({ children }) => {
     const [username, setUsername] = useState('');
     const [room, setRoom] = useState('');
     const [doneSetup, setDoneSetup] = useState(false)
+    const [messageThread, setMessageThread] = useState([]);
 
     return (
-        <MyContext.Provider value={{ message, setMessage, username, setUsername, room, setRoom, doneSetup, setDoneSetup }}>
+        <MyContext.Provider value={{ message, setMessage, username, 
+        setUsername, room, setRoom, doneSetup, setDoneSetup, messageThread, setMessageThread }}>
             {children}
         </MyContext.Provider>
     );
