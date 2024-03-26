@@ -10,7 +10,7 @@ const socket = io.connect("https://prits-server.onrender.com/");
 
 function App() {
 
-  const {message, setMessage, doneSetup, room, username, setMessageThread, setDoneSetup} = useContextProvider();
+  const {message, setMessage, doneSetup, room, username, setMessageThread, setDoneSetup, messageThread} = useContextProvider();
   const [loading, setLoading] = useState(false)
   const [showJoinError, setJoinError] = useState(false);
   const [typingUsers, setTypingUsers] = useState([])
@@ -27,7 +27,8 @@ function App() {
       username: username, 
       message: message, 
       room: room, 
-      dateTime: localTime
+      dateTime: localTime,
+      type: 'message'
     }
     socket.emit('send_message', data);
     setMessageThread(prevMessages => [...prevMessages, data]);
@@ -55,6 +56,7 @@ const handleMessage = (e) => {
   useEffect(() => {
     socket.on('receive_message', (data) => {
       setMessageThread(prevMessages => [...prevMessages, data]);
+      console.log(messageThread);
     })
 
     socket.on('join_room_error', (data) => {
@@ -70,7 +72,6 @@ const handleMessage = (e) => {
     socket.on('typingUsers', (data) => {
       
       const filteredTypingUsers = data.filter(data => data !== username);
-      console.log(filteredTypingUsers)
       setTypingUsers(filteredTypingUsers);
     })
 

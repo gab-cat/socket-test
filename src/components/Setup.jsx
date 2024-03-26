@@ -41,11 +41,19 @@ const Setup = ({joinRoom, loading, setLoading, showJoinError}) => {
             <div className="w-[300px] flex flex-col justify-center content-center mx-auto">
                 <div className="flex my-1 justify-between">
                     <div className="text-left">Room :</div>
-                    <input value={room} onChange={(e) => {setRoom(e.target.value)}} type="text" className="bg-white indent-3 border rounded-md" placeholder="Enter room"/>
+                    <input value={room} disabled={loading}  onChange={(e) => {setRoom(e.target.value)}} type="text" className="bg-white indent-3 border rounded-md" placeholder="Enter room"/>
                 </div>
                 <div className="flex my-1 justify-between">
                     <div className="mr-1">Username :</div>
-                    <input value={username} onChange={(e) => {setUsername(e.target.value)}} type="text" className="bg-white indent-3 border rounded-md" placeholder="Enter username"/>
+                    <input value={username} onChange={(e) => {setUsername(e.target.value)}} type="text" className="bg-white indent-3 border rounded-md" 
+                    placeholder="Enter username"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleClick();
+                        }
+                    }}
+                    disabled={loading} 
+                    />
                 </div>
             </div>
             <button onClick={handleClick} 

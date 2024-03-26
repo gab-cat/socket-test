@@ -2,3 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+#container {
+    overflow-y: auto;
+    display: flex;
+    flex-flow: column nowrap;
+}
+#container > :first-child {
+    margin-top: auto !important;
+}
