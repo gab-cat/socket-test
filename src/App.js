@@ -5,8 +5,8 @@ import Setup from './components/Setup';
 import MessageBox from './components/messageBox'
 import { useContextProvider } from './context';
 
-const socket = io.connect("https://prits-server.onrender.com/");
-// const socket = io.connect("localhost:5000");
+// const socket = io.connect("https://prits-server.onrender.com/");
+const socket = io.connect("localhost:5000");
 
 function App() {
 
@@ -15,8 +15,6 @@ function App() {
   const [showJoinError, setJoinError] = useState(false);
   const [typingUsers, setTypingUsers] = useState([])
 
-  const now = new Date();
-  const localTime = now.toLocaleTimeString();
 
   const sendMessage = () => {
     if (message === '') {
@@ -27,11 +25,10 @@ function App() {
       username: username, 
       message: message, 
       room: room, 
-      dateTime: localTime,
+      dateTime: '',
       type: 'message'
     }
     socket.emit('send_message', data);
-    setMessageThread(prevMessages => [...prevMessages, data]);
     setMessage('')
     socket.emit('not_typing', { username: username });
     console.log(message);
@@ -55,27 +52,53 @@ const handleMessage = (e) => {
 
   useEffect(() => {
     socket.on('receive_message', (data) => {
+      console.log(data);
       setMessageThread(prevMessages => [...prevMessages, data]);
-      console.log(messageThread);
     })
 
-    socket.on('join_room_error', (data) => {
+    socket.on('join_room_error', () => {
       setLoading(false)
       setJoinError(true);
     })
 
-    socket.on('join_room_success', (data) => {
+    socket.on('join_room_success', () => {
       setDoneSetup(true);
       setLoading(false)
     })
 
     socket.on('typingUsers', (data) => {
-      
-      const filteredTypingUsers = data.filter(data => data !== username);
-      setTypingUsers(filteredTypingUsers);
+      if (data.length > 0) {
+        const filteredTypingUsers = data.filter(user => user !== username);
+        setTypingUsers(filteredTypingUsers);
+    } else {
+        setTypingUsers([]);
+    }
     })
 
+    socket.on('disconnect', () => {
+      socket.emit('not_typing', { username: username });
+    });
+
   }, [socket]);
+
+
+  useEffect(() => {
+    const handleWindowClose = (event) => {
+      event.preventDefault();
+      const confirmationMessage = 'Are you sure you want to leave?';
+      event.returnValue = confirmationMessage;
+      socket.emit('disconnect', { username: username, room: room });
+      event.returnValue = confirmationMessage; 
+      return confirmationMessage; 
+    };
+
+    window.addEventListener('beforeunload', handleWindowClose);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleWindowClose);
+    };
+  },[])
+    
 
   return (
     <div className='h-full w-full flex flex-row content-center justify-center align-middle m-auto'>
