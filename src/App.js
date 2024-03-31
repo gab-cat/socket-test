@@ -6,8 +6,8 @@ import MessageBox from './components/messageBox'
 import { useContextProvider } from './context';
 import Cookies from 'universal-cookie';
 
-// const socket = io.connect("https://prits-server.onrender.com/");
-const socket = io.connect("192.168.1.4:5000");
+const socket = io.connect("https://prits-server.onrender.com/");
+// const socket = io.connect("192.168.1.4:5000");
 
 function App() {
   const cookies = new Cookies();
