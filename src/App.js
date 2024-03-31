@@ -5,8 +5,8 @@ import Setup from './components/Setup';
 import MessageBox from './components/messageBox'
 import { useContextProvider } from './context';
 
-// const socket = io.connect("https://prits-server.onrender.com/");
-const socket = io.connect("localhost:5000");
+const socket = io.connect("https://prits-server.onrender.com/");
+// const socket = io.connect("localhost:5000");
 
 function App() {
 
