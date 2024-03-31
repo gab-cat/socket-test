@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useContextProvider } from "../context";
 import {Input} from "@nextui-org/react";
 import { CgSpinner } from "react-icons/cg";
+import Cookies from "universal-cookie";
 
 
 const Setup = ({joinRoom, loading, setLoading, showJoinError}) => {
-
+    const cookies = new Cookies();
     const {room, setRoom, username, setUsername } = useContextProvider();
     const [showError, setShowError] = useState(false);
     const loginError = 'Please input a username and room to join.';
@@ -41,7 +42,14 @@ const Setup = ({joinRoom, loading, setLoading, showJoinError}) => {
             <div className="w-[300px] flex flex-col justify-center content-center mx-auto">
                 <div className="flex my-1 justify-between">
                     <div className="text-left">Room :</div>
-                    <input value={room} disabled={loading}  onChange={(e) => {setRoom(e.target.value)}} type="text" className="bg-white indent-3 border rounded-md" placeholder="Enter room"/>
+                    <input value={room} disabled={loading}  onChange={(e) => {setRoom(e.target.value)}} type="text" className="bg-white indent-3 border rounded-md" 
+                    placeholder="Enter room"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleClick();
+                        }
+                    }}
+                    />
                 </div>
                 <div className="flex my-1 justify-between">
                     <div className="mr-1">Username :</div>

@@ -4,17 +4,40 @@ import {useState, useEffect} from 'react'
 import Setup from './components/Setup';
 import MessageBox from './components/messageBox'
 import { useContextProvider } from './context';
+import Cookies from 'universal-cookie';
 
-const socket = io.connect("https://prits-server.onrender.com/");
-// const socket = io.connect("localhost:5000");
+// const socket = io.connect("https://prits-server.onrender.com/");
+const socket = io.connect("192.168.1.4:5000");
 
 function App() {
+  const cookies = new Cookies();
 
-  const {message, setMessage, doneSetup, room, username, setMessageThread, setDoneSetup, messageThread} = useContextProvider();
+
+  const {message, setMessage, doneSetup, room, username, setMessageThread, setDoneSetup, setRoom, setUsername, messageThread} = useContextProvider();
   const [loading, setLoading] = useState(false)
   const [showJoinError, setJoinError] = useState(false);
   const [typingUsers, setTypingUsers] = useState([])
+  const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // milliseconds in one day
+  const expirationTime = new Date(Date.now() + oneDayInMilliseconds);
 
+
+  useEffect(() => {
+    const usernameCookies = cookies.get("username");
+    const roomCookies = cookies.get("room");
+
+    if (usernameCookies === '' || roomCookies === '') 
+      return;
+    if (usernameCookies === undefined || roomCookies === undefined)
+      return;
+
+    console.log(usernameCookies + ' + ' + roomCookies);
+    setLoading(true);
+    setUsername(usernameCookies)
+    setRoom(roomCookies)
+    
+    socket.emit('join_room', { room: roomCookies, username: usernameCookies });
+
+  },[]);
 
   const sendMessage = () => {
     if (message === '') {
@@ -52,8 +75,8 @@ const handleMessage = (e) => {
 
   useEffect(() => {
     socket.on('receive_message', (data) => {
-      console.log(data);
       setMessageThread(prevMessages => [...prevMessages, data]);
+      console.log(messageThread);
     })
 
     socket.on('join_room_error', () => {
@@ -61,9 +84,12 @@ const handleMessage = (e) => {
       setJoinError(true);
     })
 
-    socket.on('join_room_success', () => {
+    socket.on('join_room_success', (data) => {
       setDoneSetup(true);
-      setLoading(false)
+      setLoading(false);
+
+      cookies.set('username', data.username, { expires: expirationTime });
+      cookies.set('room', data.room, { expires: expirationTime });
     })
 
     socket.on('typingUsers', (data) => {
@@ -87,7 +113,7 @@ const handleMessage = (e) => {
       event.preventDefault();
       const confirmationMessage = 'Are you sure you want to leave?';
       event.returnValue = confirmationMessage;
-      socket.emit('disconnect', { username: username, room: room });
+      // socket.emit('disconnect', { username: username, room: room });
       event.returnValue = confirmationMessage; 
       return confirmationMessage; 
     };

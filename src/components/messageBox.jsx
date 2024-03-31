@@ -55,20 +55,22 @@ const MessageBox = ( {sendMessage, handleMessage, typingUsers}) => {
                         // Check data type
                         if (data.type === 'system') {
                         return (
-                            <div key={index} className='text-center my-1 font-[400] text-gray-800 text-sm'>
+                            <div key={index} className='text-center my-2 font-[400] text-gray-800 text-sm'>
                             {data.message}
                             </div>
                         );
                         } else if (data.type === 'message') {
                         return (
-                            <div key={index} className={username === data.username ? 'p-2 flex flex-col self-end content-end items-end rounded-xl w-3/4 my-[-0.6vh]' : 'p-2 my-[-0.6vh] rounded-xl w-3/4'}>
+                            <div key={index} className={username === data.username ? 'p-2 flex flex-col self-end content-end items-end rounded-2xl !w-3/4 my-[-0.8vh] break-all' : 'p-2 my-[-0.8vh] rounded-2xl w-3/4 break-all'}>
                             {renderUsername && (
                                 <div className='text-xs mt-3 p-0.5 mx-1 text-gray-700'>
                                 {username === data.username ? 'You' : data.username}
                                 </div>
                             )}
-                            <div className={username === data.username ? 'rounded-xl p-2 px-3 w-fit bg-blue-600 text-white text-wrap overflow-clip font-light' : 'rounded-xl p-2 px-3 w-fit font-light bg-gray-300 text-wrap overflow-clip'}>
-                                {data.message}
+                            <div className={username === data.username ? 'rounded-xl p-2 px-3 w-fit bg-blue-600 text-white text-wrap overflow-wrap break-all overflow-clip font-light' : 'rounded-xl p-2 px-3 w-fit font-light bg-gray-300 break-all text-wrap overflow-wrap overflow-clip'}>
+                                    {data.message.split('\n').map((line, index) => (
+                                    <div key={index} className="overflow-wrap break-word">{line}</div>
+                                ))}
                                 <div className={`${username !== data.username ? 'text-gray-700' : 'text-gray-300'} text-xs text-right ml-2 mt-2`}>
                                 {data.dateTime}
                                 </div>

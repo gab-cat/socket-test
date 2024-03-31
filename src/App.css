@@ -10,3 +10,6 @@
 #container > :first-child {
     margin-top: auto !important;
 }
+.overflow-wrap {
+    word-wrap: break-word;
+}
